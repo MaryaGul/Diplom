@@ -8,7 +8,7 @@ import Color from "./settings/Color";
 import Export from "./settings/Export";
 import Dimensions from "./settings/Dimensions";
 import { ProductForm } from "./product-form";
-import { Test } from "./Test";
+
 
 
 const RightSidebar = ({

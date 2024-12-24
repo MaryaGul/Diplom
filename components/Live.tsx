@@ -10,7 +10,7 @@ import { shortcuts } from "@/constants";
 import { Comments } from "./comments/Comments";
 import { CursorChat, FlyingReaction, LiveCursors, ReactionSelector } from "./index";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "./ui/context-menu";
-import { Test } from "./Test";
+import { ProductCard } from "./Test";
 
 type Props = {
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
@@ -235,7 +235,13 @@ const Live = ({ canvasRef, undo, redo }: Props) => {
         onPointerUp={handlePointerUp}
       >
         {/* <canvas ref={canvasRef} /> */}
-        <Test/>
+        <ProductCard
+        publicId="1чч_t7ztmx"
+        backgroundId="112_mqs5xy"
+        headline="СМАРТ-ЧАСЫ"
+        subheadline="2-й ремешок в подарок"
+        alt="A sleek smartwatch with promotional details"
+      />
         {/* Render the reactions */}
         {reactions.map((reaction) => (
           <FlyingReaction

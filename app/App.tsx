@@ -19,7 +19,7 @@ import {
   renderCanvas,
 } from "@/lib/canvas";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
-import { LeftSidebar, Live, Navbar, RightSidebar } from "@/components/index";
+import { /*LeftSidebar,*/ Live, Navbar, RightSidebar } from "@/components/index";
 import { handleImageUpload } from "@/lib/shapes";
 import { defaultNavElement } from "@/constants";
 import { ActiveElement, Attributes } from "@/types/type";
@@ -508,7 +508,7 @@ const Home = () => {
       />
 
       <section className='flex h-full flex-row'>
-        <LeftSidebar allShapes={Array.from(canvasObjects)} />
+        {/* <LeftSidebar allShapes={Array.from(canvasObjects)} /> */}
 
         <Live canvasRef={canvasRef} undo={undo} redo={redo} />
 
