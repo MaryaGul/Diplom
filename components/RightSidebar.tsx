@@ -1,15 +1,12 @@
 import React, { useMemo, useRef } from "react";
-
 import { RightSidebarProps } from "@/types/type";
 import { bringElement, modifyShape } from "@/lib/shapes";
-
 import Text from "./settings/Text";
 import Color from "./settings/Color";
 import Export from "./settings/Export";
 import Dimensions from "./settings/Dimensions";
+import { ProductCard } from "./Test";
 import { ProductForm } from "./product-form";
-
-
 
 const RightSidebar = ({
   elementAttributes,
@@ -36,12 +33,9 @@ const RightSidebar = ({
     });
   };
 
-  // memoize the content of the right sidebar to avoid re-rendering on every mouse actions
   const memoizedContent = useMemo(
     () => (
       <section className="flex flex-col border-t border-primary-grey-200 bg-primary-black text-primary-grey-300 min-w-[220px] sticky right-0 max-sm:hidden select-none h-[calc(100vh-50px)] overflow-y-auto">
-        
-
         <Dimensions
           isEditingRef={isEditingRef}
           width={elementAttributes.width}
@@ -76,18 +70,16 @@ const RightSidebar = ({
           />
         </div>
 
-        <ProductForm />
-
-    
-       
-
+        
+        
         <Export />
       </section>
     ),
     [elementAttributes]
-  ); // only re-render when elementAttributes changes
+  );
 
   return memoizedContent;
 };
 
 export default RightSidebar;
+

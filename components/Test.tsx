@@ -1,5 +1,7 @@
+import React, { useState, useRef, useEffect } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { Phone, Music, Heart, Battery, Wifi } from 'lucide-react'
+import { TextEditor } from './TextEditor'
 
 const features = [
   { name: 'Связь', icon: Phone },
@@ -10,29 +12,106 @@ const features = [
 ]
 
 interface ProductCardProps {
-  publicId: string
-  backgroundId: string
-  headline: string
-  subheadline: string
-  alt: string
+  publicId: string;
+  backgroundId: string;
+  headline: string;
+  subheadline: string;
+  alt: string;
+}
+
+interface TextStyles {
+  fontFamily: string;
+  fontSize: string;
+  fontWeight: string;
+  color: string;
 }
 
 export function ProductCard({
   publicId,
   backgroundId,
-  headline,
-  subheadline,
+  headline: initialHeadline,
+  subheadline: initialSubheadline,
   alt,
 }: ProductCardProps) {
+  const [headline, setHeadline] = useState(initialHeadline);
+  const [subheadline, setSubheadline] = useState(initialSubheadline);
+  const [selectedText, setSelectedText] = useState<'headline' | 'subheadline' | null>(null);
+  const [editorPosition, setEditorPosition] = useState({ x: 0, y: 0 });
+  const [headlineStyles, setHeadlineStyles] = useState<TextStyles>({
+    fontFamily: 'Times New Roman',
+    fontSize: '45px',
+    fontWeight: 'bold',
+    color: '#EC4899'
+  });
+  const [subheadlineStyles, setSubheadlineStyles] = useState<TextStyles>({
+    fontFamily: 'Arial',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#000000'
+  });
+
+  const handleTextSelection = (type: 'headline' | 'subheadline', event: React.MouseEvent) => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      setSelectedText(type);
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setEditorPosition({
+        x: Math.min(rect.left, window.innerWidth - 220), // Ensure the editor doesn't go off-screen
+        y: rect.bottom + window.scrollY + 10
+      });
+    }
+  };
+
+  const handleStyleChange = (property: keyof TextStyles, value: string) => {
+    if (selectedText === 'headline') {
+      setHeadlineStyles(prev => ({ ...prev, [property]: value }));
+    } else if (selectedText === 'subheadline') {
+      setSubheadlineStyles(prev => ({ ...prev, [property]: value }));
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const editor = document.getElementById('text-editor');
+      const isClickInside = editor?.contains(event.target as Node);
+      
+      if (!isClickInside && !window.getSelection()?.toString()) {
+        setSelectedText(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="relative w-[450px] h-[600px] overflow-hidden bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
       {/* Header Section */}
       <div className="pt-8 px-4 space-y-4">
-        <h1 className="text-[45px] font-bold text-center bg-gradient-to-r from-pink-500 to-purple-600 text-transparent bg-clip-text">
+        <h1
+          className="text-center select-text cursor-text"
+          style={{
+            ...headlineStyles,
+            background: 'linear-gradient(to right, #ec4899, #9333ea)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+          onMouseUp={(e) => handleTextSelection('headline', e)}
+        >
           {headline}
         </h1>
         <div className="flex justify-center">
-          <h2 className="text-2xl font-bold text-black bg-white px-4 py-2 rounded-xl shadow-lg">
+          <h2
+            className="px-4 py-2 rounded-xl shadow-lg select-text cursor-text"
+            style={{
+              ...subheadlineStyles,
+              backgroundColor: 'white',
+            }}
+            onMouseUp={(e) => handleTextSelection('subheadline', e)}
+          >
             {subheadline}
           </h2>
         </div>
@@ -65,6 +144,14 @@ export function ProductCard({
           />
         </div>
       </div>
+
+      {selectedText && (
+        <TextEditor
+          position={editorPosition}
+          onStyleChange={handleStyleChange}
+          currentStyles={selectedText === 'headline' ? headlineStyles : subheadlineStyles}
+        />
+      )}
     </div>
   )
 }
